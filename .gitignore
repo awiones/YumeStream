@@ -1,0 +1,57 @@
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore log files
+*.log
+
+# Ignore environment files
+.env
+.env.*
+
+# Ignore Composer dependencies (if used)
+vendor/
+
+# Ignore Node dependencies (if used)
+node_modules/
+
+# Ignore IDE/editor files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Ignore OS generated files
+*.swp
+*~
+
+# Ignore database dumps
+*.sql
+*.sqlite
+
+# Ignore cache and session files
+cache/
+session/
+
+# Ignore build output
+/dist/
+/build/
+
+# Ignore uploads and user-generated content
+public/assets/images/uploads/
+
+# Ignore admin assets cache
+admin/assets/cache/
+
+# Ignore backup files
+*.bak
+*.tmp
+
+# Ignore coverage reports
+coverage/
+
+# Ignore PHPStorm project files
+/.phpstorm.meta.php
+
+# Ignore custom config overrides
+config/local.php

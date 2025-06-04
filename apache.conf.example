@@ -1,0 +1,16 @@
+<VirtualHost *:80>
+    ServerName yumestream.local
+    DocumentRoot /path/to/YumeStream/public
+    
+    <Directory /path/to/YumeStream/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+    
+    # Ensure mod_rewrite is enabled
+    RewriteEngine On
+    
+    ErrorLog ${APACHE_LOG_DIR}/yumestream-error.log
+    CustomLog ${APACHE_LOG_DIR}/yumestream-access.log combined
+</VirtualHost>

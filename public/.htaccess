@@ -1,0 +1,16 @@
+RewriteEngine On
+
+# Allow direct access to assets and static files
+RewriteCond %{REQUEST_URI} ^/assets/ [OR]
+RewriteCond %{REQUEST_URI} \.(css|js|jpg|jpeg|png|gif|ico|svg|woff|woff2|ttf|eot)$ [NC]
+RewriteRule ^ - [L]
+
+# Prevent direct access to .php files (except index.php)
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteCond %{REQUEST_URI} !^/index\.php$ [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# Route all requests through index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]
