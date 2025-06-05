@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <nav class="navbar">
         <div class="container">
@@ -24,7 +26,7 @@
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <div class="profile-dropdown">
                         <div class="profile-avatar" id="profileAvatar">
-                            <?php 
+                            <?php
                             // Get first letter of username
                             $firstLetter = isset($_SESSION['username']) ? strtoupper(substr($_SESSION['username'], 0, 1)) : 'U';
                             echo $firstLetter;
@@ -56,9 +58,9 @@
                                 <i class="fas fa-cog"></i> Settings
                             </a>
                             <?php if ($role === 'admin'): ?>
-                            <a href="/admin/dashboard" class="dropdown-item">
-                                <i class="fas fa-shield-alt"></i> Admin Panel
-                            </a>
+                                <a href="/admin" class="dropdown-item">
+                                    <i class="fas fa-shield-alt"></i> Admin Panel
+                                </a>
                             <?php endif; ?>
                             <div class="dropdown-divider"></div>
                             <a href="/logout" class="dropdown-item">
@@ -85,26 +87,26 @@
         </div>
     </nav>
     <main class="main-content">
-    
-    <script>
-        // Profile dropdown functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const profileAvatar = document.getElementById('profileAvatar');
-            const profileDropdown = document.getElementById('profileDropdown');
-            
-            if (profileAvatar && profileDropdown) {
-                // Toggle dropdown on avatar click
-                profileAvatar.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    profileDropdown.classList.toggle('show');
-                });
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (profileDropdown.classList.contains('show') && !profileDropdown.contains(e.target)) {
-                        profileDropdown.classList.remove('show');
-                    }
-                });
-            }
-        });
-    </script>
+
+        <script>
+            // Profile dropdown functionality
+            document.addEventListener('DOMContentLoaded', function() {
+                const profileAvatar = document.getElementById('profileAvatar');
+                const profileDropdown = document.getElementById('profileDropdown');
+
+                if (profileAvatar && profileDropdown) {
+                    // Toggle dropdown on avatar click
+                    profileAvatar.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        profileDropdown.classList.toggle('show');
+                    });
+
+                    // Close dropdown when clicking outside
+                    document.addEventListener('click', function(e) {
+                        if (profileDropdown.classList.contains('show') && !profileDropdown.contains(e.target)) {
+                            profileDropdown.classList.remove('show');
+                        }
+                    });
+                }
+            });
+        </script>

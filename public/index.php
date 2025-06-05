@@ -16,51 +16,23 @@ $router->add('register', __DIR__ . '/../includes/pages/auth/register.php');
 $router->add('logout', __DIR__ . '/../includes/pages/auth/logout.php');
 
 // Admin routes - redirect to admin area
-$router->add('admin', function() {
-    header('Location: /admin/');
+$router->add('admin', function () {
+    $_GET['page'] = 'dashboard';
+    include __DIR__ . '/../admin/index.php';
     exit;
 });
 
-// Admin routes - proxy to admin directory
-$router->add('admin/dashboard', function() {
-    // Proxy the request to the public admin directory
-    include __DIR__ . '/admin/index.php';
-    exit;
-});
-
-$router->add('admin/users', function() {
-    // Proxy the request to the public admin directory
-    include __DIR__ . '/admin/index.php';
-    exit;
-});
-
-$router->add('admin/anime', function() {
-    // Proxy the request to the public admin directory
-    include __DIR__ . '/admin/index.php';
-    exit;
-});
-
-$router->add('admin/episodes', function() {
-    // Proxy the request to the public admin directory
-    include __DIR__ . '/admin/index.php';
-    exit;
-});
-
-$router->add('admin/genres', function() {
-    // Proxy the request to the public admin directory
-    include __DIR__ . '/admin/index.php';
-    exit;
-});
-
-$router->add('admin/reports', function() {
-    // Proxy the request to the public admin directory
-    include __DIR__ . '/admin/index.php';
-    exit;
-});
-
-$router->add('admin/settings', function() {
-    // Proxy the request to the public admin directory
-    include __DIR__ . '/admin/index.php';
+// Admin dynamic route - match /admin/{page} and proxy to admin/index.php
+$router->add('admin/(.*)', function ($matches) {
+    // Extract the page from the route
+    $page = $matches[1];
+    // Only allow certain admin pages
+    $allowed_pages = ['dashboard', 'users', 'anime', 'episodes', 'genres', 'reports', 'settings'];
+    if (!in_array($page, $allowed_pages)) {
+        $page = 'dashboard';
+    }
+    $_GET['page'] = $page;
+    include __DIR__ . '/../admin/index.php';
     exit;
 });
 

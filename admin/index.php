@@ -1,71 +1,55 @@
 <?php
+// Start session only if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once '../../../config/database.php';
 
-// Check if user is logged in
+// Include necessary files
+require_once '../config/database.php';
+
+// Get PDO instance
+$pdo = getDB();
+
+// Check if user is logged in and is admin
 if (!isset($_SESSION['user_id'])) {
-    // Not logged in, redirect to login page with return URL
-    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-    header('Location: /login');
+    header('Location: /public/?route=login');
     exit;
 }
 
-// Check if user has admin role
-$stmt = getDB()->prepare("
-    SELECT r.name 
-    FROM users u
-    JOIN roles r ON u.role_id = r.id
-    WHERE u.id = ?
-");
-$stmt->execute([$_SESSION['user_id']]);
-$role = $stmt->fetchColumn();
+// Get user role from database
+try {
+    $stmt = $pdo->prepare("SELECT u.*, r.name as role_name FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
 
-if ($role !== 'admin') {
-    // Not an admin, redirect to home page with error message
-    $_SESSION['error_message'] = 'You do not have permission to access the admin area.';
-    header('Location: /home');
+    if (!$user || $user['role_name'] !== 'admin') {
+        header('Location: /public/');
+        exit;
+    }
+} catch (PDOException $e) {
+    header('Location: /public/?route=login');
     exit;
 }
 
-// Set admin session flag
-$_SESSION['is_admin'] = true;
+// Get current page from URL
+$page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
+$allowed_pages = ['dashboard', 'users', 'anime', 'episodes', 'genres', 'reports', 'settings'];
 
-// Get the requested page from URL
-$requestUri = $_SERVER['REQUEST_URI'];
-$adminBasePath = '/admin/';
-
-// Check if there's a specific admin page requested
-if (strlen($requestUri) > strlen($adminBasePath)) {
-    $page = substr($requestUri, strlen($adminBasePath));
-    
-    // Handle direct access to admin pages with clean URLs
-    if (preg_match('/^([a-zA-Z0-9_-]+)$/', $page, $matches)) {
-        $pageName = $matches[1];
-        $pagePath = __DIR__ . '/pages/' . $pageName . '.php';
-        
-        if (file_exists($pagePath)) {
-            // Include the requested page
-            include $pagePath;
-            exit;
-        }
-    }
-    
-    // For backward compatibility, also handle /pages/name.php format
-    if (preg_match('/^pages\/([a-zA-Z0-9_-]+)\.php/', $page, $matches)) {
-        $pageName = $matches[1];
-        $pagePath = __DIR__ . '/pages/' . $pageName . '.php';
-        
-        if (file_exists($pagePath)) {
-            // Redirect to clean URL
-            header('Location: /admin/' . $pageName);
-            exit;
-        }
-    }
+if (!in_array($page, $allowed_pages)) {
+    $page = 'dashboard';
 }
 
-// Default: if no specific page is requested, show dashboard
-include __DIR__ . '/pages/dashboard.php';
-exit;
-?>
+// Include header
+include 'includes/header.php';
+include 'includes/sidebar.php';
+
+// Include the requested page
+$page_file = "pages/{$page}.php";
+if (file_exists($page_file)) {
+    include $page_file;
+} else {
+    include 'pages/dashboard.php';
+}
+
+// Include footer
+include 'includes/footer.php';

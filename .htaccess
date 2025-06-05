@@ -1,5 +1,9 @@
 RewriteEngine On
 
+# Route /admin and /admin/* to public/index.php for clean admin URLs
+RewriteRule ^admin/?$ public/index.php?route=admin [QSA,L]
+RewriteRule ^admin/([a-zA-Z0-9_-]+)$ public/index.php?route=admin/$1 [QSA,L]
+
 # If the request is not for the public directory
 RewriteCond %{REQUEST_URI} !^/public/
 
