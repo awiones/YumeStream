@@ -24,11 +24,14 @@ $router->add('admin', function () {
 
 // Admin dynamic route - match /admin/{page} and proxy to admin/index.php
 $router->add('admin/(.*)', function ($matches) {
-    // Extract the page from the route
-    $page = $matches[1];
+    // Extract the page from the route and treat it as the page name
+    $page = $matches[0];
     // Only allow certain admin pages
     $allowed_pages = ['dashboard', 'users', 'anime', 'episodes', 'genres', 'reports', 'settings'];
-    if (!in_array($page, $allowed_pages)) {
+    $allowed_subpages = ['anime/add', 'anime/edit', 'anime/list'];
+    $is_subpage = strpos($page, '/') !== false;
+    $main_page = $is_subpage ? explode('/', $page)[0] : $page;
+    if (!in_array($page, $allowed_pages) && !in_array($page, $allowed_subpages) && !in_array($main_page, $allowed_pages)) {
         $page = 'dashboard';
     }
     $_GET['page'] = $page;
